@@ -39,6 +39,6 @@ class SqlConnection:
             print("Connection already closed")
 
 
-    def query(self, query):
-        self.cursor.execute(query)
+    def sql_command(self, command):
+        self.cursor.execute(command)
         return self.cursor

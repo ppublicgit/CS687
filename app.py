@@ -31,7 +31,31 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
     def handle_edit_details(self):
-
+        if self.current_user[0] is None:
+            pass
+        elif self.current_user[0] == "Company":
+            cname = self.le_act_company.text()
+            address = self.le_address_company.text()
+            country_code = self.le_country_of_origin.text()
+            cid = self.le_company_id.text()
+            command = ("UPDATE COMPANY SET "
+                       f"cname = '{cname}', "
+                       f"address = '{address}', "
+                       f"country_code = '{country_code}' "
+                       f"WHERE id = {cid}")
+            print(command)
+            _ = self.eng.sql_command(command)
+        elif self.current_user[0] == "User":
+            fn = self.le_first_name.text()
+            ln = self.le_last_name.text()
+            address = self.le_address_user.text()
+            uid = self.le_user_id.text()
+            command = ("UPDATE USER SET "
+                       f"firstname = '{fn}', "
+                       f"lastname = '{ln}', "
+                       f"address = '{address}' "
+                       f"WHERE id = {uid}")
+            _ = self.eng.sql_command(command)
         return
 
 
@@ -40,18 +64,23 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.le_first_name.setText(fn)
         self.le_last_name.setText(ln)
         self.le_address_user.setText(add)
-        if disable:
-            self.le_user_id.setEnabled(False)
-            self.le_first_name.setEnabled(False)
-            self.le_last_name.setEnabled(False)
-            self.le_address_user.setEnabled(False)
-            self.le_user_user.setEnabled(False)
-        else:
-            self.le_user_id.setEnabled(True)
-            self.le_first_name.setEnabled(True)
-            self.le_last_name.setEnabled(True)
-            self.le_address_user.setEnabled(True)
-            self.le_user_user.setEnabled(True)
+        return
+
+
+    def set_user_enabled(self, disable):
+        self.le_user_id.setEnabled(not disable)
+        self.le_first_name.setEnabled(not disable)
+        self.le_last_name.setEnabled(not disable)
+        self.le_address_user.setEnabled(not disable)
+        self.le_user_user.setEnabled(not disable)
+
+
+    def set_company_enabled(self, disable):
+        self.le_company_id.setEnabled(not disable)
+        self.le_address_company.setEnabled(not disable)
+        self.le_country_of_origin.setEnabled(not disable)
+        self.le_act_company.setEnabled(not disable)
+        self.le_user_company.setEnabled(not disable)
         return
 
 
@@ -60,18 +89,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.le_address_company.setText(add)
         self.le_country_of_origin.setText(cou)
         self.le_act_company.setText(cn)
-        if disable:
-            self.le_company_id.setEnabled(False)
-            self.le_address_company.setEnabled(False)
-            self.le_country_of_origin.setEnabled(False)
-            self.le_act_company.setEnabled(False)
-            self.le_user_company.setEnabled(False)
-        else:
-            self.le_company_id.setEnabled(True)
-            self.le_address_company.setEnabled(True)
-            self.le_country_of_origin.setEnabled(True)
-            self.le_act_company.setEnabled(True)
-            self.le_user_company.setEnabled(True)
+        self.set_company_enabled(disable)
         return
 
 
@@ -83,8 +101,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.set_comp_info("", "", "", "")
         elif comp:
             self.set_company_mode()
+            self.le_user_user.setText("")
         else:
             self.set_user_mode()
+            self.le_user_company.setText("")
         return
 
 
@@ -93,7 +113,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         cid = self.le_user_company.text()
         if cid == "":
             return
-        self.eng.query(f"SELECT * FROM COMPANY WHERE id = {cid}")
+        self.eng.sql_command(f"SELECT * FROM COMPANY WHERE id = {cid}")
         ret = False
         for row in self.eng.cursor:
             ret = True
@@ -112,7 +132,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         userid = self.le_user_user.text()
         if userid == "":
             return
-        self.eng.query(f"SELECT * FROM USER WHERE id = {userid}")
+        self.eng.sql_command(f"SELECT * FROM USER WHERE id = {userid}")
         ret = False
         for row in self.eng.cursor:
             ret = True

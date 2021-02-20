@@ -37,14 +37,15 @@ CREATE TABLE PRODUCT (
     category int NOT NULL,
     company_id int NOT NULL,
     price float NOT NULL,
+    valid boolean NOT NULL,
     FOREIGN KEY (company_id) REFERENCES COMPANY(id),
     CONSTRAINT product_pk PRIMARY KEY  (id)
 );
 
-INSERT INTO PRODUCT (id, product_name, category, company_id, price) VALUES (1,'Awesome Phone',1,1,754.75);
-INSERT INTO PRODUCT (id, product_name, category, company_id, price) VALUES (2,'Knock Off Phone',1,2,354.23);
-INSERT INTO PRODUCT (id, product_name, category, company_id, price) VALUES (3,'Jeans',2,3,24.99);
-INSERT INTO PRODUCT (id, product_name, category, company_id, price) VALUES (4,'Silver Cutlery', 3, 4, 250.0);
+INSERT INTO PRODUCT (id, product_name, category, company_id, price, valid) VALUES (1,'Awesome Phone',1,1,754.75,true);
+INSERT INTO PRODUCT (id, product_name, category, company_id, price, valid) VALUES (2,'Knock Off Phone',1,2,354.23,true);
+INSERT INTO PRODUCT (id, product_name, category, company_id, price, valid) VALUES (3,'Jeans',2,3,24.99,true);
+INSERT INTO PRODUCT (id, product_name, category, company_id, price, valid) VALUES (4,'Silver Cutlery', 3, 4, 250.0, true);
 -- FOREIGN KEY (category) REFERENCES PRODUCT(category),
 CREATE TABLE PRODUCT_TYPES (
     category int NOT NULL,

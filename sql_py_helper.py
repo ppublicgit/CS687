@@ -1,5 +1,6 @@
 import mysql.connector
 from mysql.connector import Error
+from copy import deepcopy
 
 
 class SqlConnection:
@@ -36,3 +37,8 @@ class SqlConnection:
             print("MySQL connection is closed")
         else:
             print("Connection already closed")
+
+
+    def query(self, query):
+        self.cursor.execute(query)
+        return self.cursor

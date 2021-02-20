@@ -30,6 +30,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.pb_sort.clicked.connect(self.handle_sort_transactions)
         self.pb_buy.clicked.connect(self.handle_buy)
         self.pb_new_item.clicked.connect(self.handle_new_item)
+        self.pb_product_search.clicked.connect(self.handle_search_item)
+        self.pb_product_search_reset.clicked.connect(self.handle_search_reset)
 
         self.table_transactions.setColumnCount(8)
 
@@ -42,10 +44,26 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.setup_categories()
 
+        self.maxval = self.get_max_val()
+
+        self.set_sb_vals(self.sb_min_price, minval=0, maxval=self.maxval, val=0)
+        self.set_sb_vals(self.sb_max_price, minval=0, maxval=self.maxval, val=self.maxval)
+        self.sb_min_price.valueChanged.connect(self.sb_min_price_update)
+        self.sb_max_price.valueChanged.connect(self.sb_max_price_update)
+
+
+    def get_max_val(self):
+        self.eng.sql_command("SELECT price FROM PRODUCT ORDER BY price DESC")
+        price = None
+        for row in self.eng.cursor:
+            if price is None:
+                price = row[0]
+        return price
+
 
     def setup_categories(self):
         self.eng.sql_command("SELECT category, category_name FROM PRODUCT_TYPES")
-        self.categories = {}
+        self.categories = {"all": -1}
         for (cat, cat_name) in self.eng.cursor:
             self.categories[cat_name] = cat
             self.cb_new_item_category.insertItem(cat, cat_name)
@@ -65,9 +83,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self.table_items.setItem(i, j, newitem)
         self.table_items.resizeColumnsToContents()
         self.table_items.resizeRowsToContents()
-
         self.table_items.setHorizontalHeaderLabels(["Product ID", "Product Name", "Category", "Company ID", "Price"])
-
         return
 
 
@@ -104,6 +120,24 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.table_support.resizeRowsToContents()
 
         self.table_support.setHorizontalHeaderLabels(["Company ID", "Contact Name", "Contact Email", "Contact Phone"])
+        return
+
+
+    def handle_search_reset(self):
+        self.sb_min_price.setValue(0)
+        self.sb_max_price.setValue(self.maxval)
+        self.display_all_items()
+        return
+
+
+    def handle_search_item(self):
+        lowprice = self.sb_min_price.getValue()
+        highprice = self.sb_max_price.getValue()
+        category = self.cb_new_item_category.currentIndex()
+        if category == "all":
+            ("SELECT * FROM PRODUCT WHERE price >= {lowprice} AND price <= {highprice}")
+        else:
+            ("SELECT * FROM PRODUCT WHERE price >= {lowprice} AND price <= {highprice} AND category = {category}")
         return
 
 
@@ -166,6 +200,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         price = self.le_new_item_price.text()
         self.eng.sql_command(f"INSERT INTO PRODUCT (product_name, category, company_id, price) VALUES ('{pn}', {cat}, {cid}, {price})")
         self.display_all_items()
+        if float(price) > self.maxval:
+            self.maxval = float(price)
+            self.sb_min_price.setMaximum(self.maxval)
+            self.sb_max_price.setMaximum(self.maxval)
+            self.sb_min_price.setValue(0)
+            self.sb_max_price.setValue(self.maxval)
         return
 
 
@@ -223,7 +263,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         else:
             self.set_user_mode()
             self.le_user_company.setText("")
-        self.setup_transaction_tab()
+        #self.setup_transaction_tab()
         return
 
 
@@ -284,17 +324,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         curval = self.sb_max_price.value()
         if self.sb_min_price.value() > curval:
             self.sb_min_price.setValue(curval)
-        return
-
-
-    def setup_transaction_tab(self):
-        ### Setup Price Frame ###
-        #self.set_sb_vals(self.sb_min_price, minval=0, maxval=10, val=0)
-        #self.set_sb_vals(self.sb_max_price, minval=0, maxval=10, val=0)
-        #self.sb_min_price.valueChanged.connect(self.sb_min_price_update)
-        #self.sb_max_price.valueChanged.connect(self.sb_max_price_update)
-        #self.setup_sb(self.sb_min_price)
-        #self.setup_sb(self.sb_max_price)
         return
 
 

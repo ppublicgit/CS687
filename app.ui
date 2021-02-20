@@ -32,7 +32,7 @@
       <item>
        <widget class="QTabWidget" name="tabWidget">
         <property name="currentIndex">
-         <number>0</number>
+         <number>5</number>
         </property>
         <widget class="QWidget" name="tab_user_select">
          <attribute name="title">
@@ -669,47 +669,6 @@
              </widget>
             </item>
             <item>
-             <widget class="QFrame" name="frame_product_name">
-              <property name="frameShape">
-               <enum>QFrame::StyledPanel</enum>
-              </property>
-              <property name="frameShadow">
-               <enum>QFrame::Raised</enum>
-              </property>
-              <layout class="QVBoxLayout" name="verticalLayout_24">
-               <item>
-                <widget class="QLabel" name="label_product_name">
-                 <property name="font">
-                  <font>
-                   <underline>true</underline>
-                  </font>
-                 </property>
-                 <property name="text">
-                  <string>Product Names</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLineEdit" name="le_product_product">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QPushButton" name="pb_add_product_product">
-                 <property name="text">
-                  <string>Add Product</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </widget>
-            </item>
-            <item>
              <widget class="QFrame" name="frame_product_category">
               <property name="frameShape">
                <enum>QFrame::StyledPanel</enum>
@@ -737,47 +696,6 @@
                 <widget class="QPushButton" name="pb_add_product_category">
                  <property name="text">
                   <string>Add Category</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </widget>
-            </item>
-            <item>
-             <widget class="QFrame" name="frame_product_company">
-              <property name="frameShape">
-               <enum>QFrame::StyledPanel</enum>
-              </property>
-              <property name="frameShadow">
-               <enum>QFrame::Raised</enum>
-              </property>
-              <layout class="QVBoxLayout" name="verticalLayout_30">
-               <item>
-                <widget class="QLabel" name="label_product_company">
-                 <property name="font">
-                  <font>
-                   <underline>true</underline>
-                  </font>
-                 </property>
-                 <property name="text">
-                  <string>Company Names</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLineEdit" name="le_product_company">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QPushButton" name="pb_add_product_company">
-                 <property name="text">
-                  <string>Add Company</string>
                  </property>
                 </widget>
                </item>
@@ -813,17 +731,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QSlider" name="hs_product_price">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                </widget>
+                <widget class="QDoubleSpinBox" name="sb_min_price"/>
                </item>
                <item>
                 <widget class="QLabel" name="label_product_price_max">
@@ -833,17 +741,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QSlider" name="horizontalSlider_4">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                </widget>
+                <widget class="QDoubleSpinBox" name="sb_max_price"/>
                </item>
               </layout>
              </widget>
@@ -852,6 +750,13 @@
              <widget class="QPushButton" name="pb_product_search">
               <property name="text">
                <string>Search</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pb_product_search_reset">
+              <property name="text">
+               <string>Reset</string>
               </property>
              </widget>
             </item>

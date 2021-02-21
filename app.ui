@@ -692,13 +692,6 @@
                <item>
                 <widget class="QComboBox" name="cb_search_category"/>
                </item>
-               <item>
-                <widget class="QPushButton" name="pb_add_product_category">
-                 <property name="text">
-                  <string>Add Category</string>
-                 </property>
-                </widget>
-               </item>
               </layout>
              </widget>
             </item>

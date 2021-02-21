@@ -63,10 +63,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def setup_categories(self):
         self.eng.sql_command("SELECT category, category_name FROM PRODUCT_TYPES")
-        self.categories = {"all": -1}
+        self.cb_search_category.insertItem(0, "All")
         for (cat, cat_name) in self.eng.cursor:
-            self.categories[cat_name] = cat
+            #self.categories[cat_name] = cat
             self.cb_new_item_category.insertItem(cat, cat_name)
+            self.cb_search_category.insertItem(cat, cat_name)
         return
 
 
@@ -131,13 +132,22 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
     def handle_search_item(self):
-        lowprice = self.sb_min_price.getValue()
-        highprice = self.sb_max_price.getValue()
-        category = self.cb_new_item_category.currentIndex()
-        if category == "all":
-            ("SELECT * FROM PRODUCT WHERE price >= {lowprice} AND price <= {highprice}")
+        lowprice = self.sb_min_price.value()
+        highprice = self.sb_max_price.value()
+        category = self.cb_search_category.currentIndex()
+        if category == 0:
+            command = f"SELECT p.id, p.product_name, pt.category_name, p.company_id, p.price FROM PRODUCT AS p JOIN PRODUCT_TYPES AS pt ON p.category = pt.category WHERE p.price <= {highprice} AND p.price >= {lowprice}"
         else:
-            ("SELECT * FROM PRODUCT WHERE price >= {lowprice} AND price <= {highprice} AND category = {category}")
+            command = f"SELECT p.id, p.product_name, pt.category_name, p.company_id, p.price FROM PRODUCT AS p JOIN PRODUCT_TYPES AS pt ON p.category = pt.category WHERE p.price <= {highprice} AND p.price >= {lowprice} AND p.category = {category}"
+        self.eng.sql_command(command)
+        self.table_items.clear()
+        for i, row in enumerate(self.eng.cursor):
+            if self.table_items.rowCount() <= i:
+                self.table_items.insertRow(i)
+            for j, val in enumerate(row):
+                val = str(val).rjust(20)
+                newitem = QTableWidgetItem(val)
+                self.table_items.setItem(i, j, newitem)
         return
 
 
@@ -154,8 +164,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                        f"address = '{address}', "
                        f"country_code = '{country_code}' "
                        f"WHERE id = {cid}")
-            print(command)
-            _ = self.eng.sql_command(command)
+            self.eng.sql_command(command)
+            self.display_all_companies()
         elif self.current_user[0] == "User":
             fn = self.le_first_name.text()
             ln = self.le_last_name.text()
@@ -166,7 +176,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                        f"lastname = '{ln}', "
                        f"address = '{address}' "
                        f"WHERE id = {uid}")
-            _ = self.eng.sql_command(command)
+            self.eng.sql_command(command)
         return
 
 
@@ -185,7 +195,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         quantity = self.le_buy_quantity.text()
         uid = self.current_user[1]
         transact_date = datetime.datetime.now().strftime("%Y-%m-%d")
-        print(transact_date)
         self.eng.sql_command(f"INSERT INTO TRANSACTIONS (user_id, product_id, quantity, transact_date) VALUES ({uid}, {pid}, {quantity}, '{transact_date}')")
         self.user_transaction_options()
         return

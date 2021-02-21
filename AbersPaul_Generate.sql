@@ -12,10 +12,10 @@ CREATE TABLE COMPANY (
     CONSTRAINT company_pk PRIMARY KEY (id)
 );
 
-INSERT INTO COMPANY (id, cname, address, country_code) VALUES (1,'Electron','Sante Fe, NM','United States');
-INSERT INTO COMPANY (id, cname, address, country_code) VALUES (2,'Intensity','New York NY','United States');
-INSERT INTO COMPANY (id, cname, address, country_code) VALUES (3,'Danke','Munich','Germany');
-INSERT INTO COMPANY (id, cname, address, country_code) VALUES (4,'Voules Vouz','Place de Italie, Paris','France');
+INSERT INTO COMPANY (cname, address, country_code) VALUES ('Electron','Sante Fe, NM','United States');
+INSERT INTO COMPANY (cname, address, country_code) VALUES ('Intensity','New York NY','United States');
+INSERT INTO COMPANY (cname, address, country_code) VALUES ('Danke','Munich','Germany');
+INSERT INTO COMPANY (cname, address, country_code) VALUES ('Voules Vouz','Place de Italie, Paris','France');
 
 
 CREATE TABLE USER (
@@ -26,25 +26,26 @@ CREATE TABLE USER (
     CONSTRAINT user_pk PRIMARY KEY  (id)
 );
 
-INSERT INTO USER (id, firstname, lastname, address) VALUES (1,'Jennifer','Smith','Austin, TX');
-INSERT INTO USER (id, firstname, lastname, address) VALUES (2,'Adam',' Smith','Glasgow, Scotland');
-INSERT INTO USER (id, firstname, lastname, address) VALUES (3,'Pierangelo','Pirlo','Firenze, Italy');
-INSERT INTO USER (id, firstname, lastname, address) VALUES (4,'Tim','Nguyen','Hanoi, Vietnam');
+INSERT INTO USER (firstname, lastname, address) VALUES ('Jennifer','Smith','Austin, TX');
+INSERT INTO USER (firstname, lastname, address) VALUES ('Adam',' Smith','Glasgow, Scotland');
+INSERT INTO USER (firstname, lastname, address) VALUES ('Pierangelo','Pirlo','Firenze, Italy');
+INSERT INTO USER (firstname, lastname, address) VALUES ('Tim','Nguyen','Hanoi, Vietnam');
 
 CREATE TABLE PRODUCT (
     id int  NOT NULL AUTO_INCREMENT,
     product_name varchar(128) NOT NULL,
-    category int NOT NULL,
+    category int NOT NULL DEFAULT 4,
     company_id int NOT NULL,
     price float NOT NULL,
     FOREIGN KEY (company_id) REFERENCES COMPANY(id),
     CONSTRAINT product_pk PRIMARY KEY  (id)
 );
 
-INSERT INTO PRODUCT (id, product_name, category, company_id, price) VALUES (1,'Awesome Phone',1,1,754.75);
-INSERT INTO PRODUCT (id, product_name, category, company_id, price) VALUES (2,'Knock Off Phone',1,2,354.23);
-INSERT INTO PRODUCT (id, product_name, category, company_id, price) VALUES (3,'Jeans',2,3,24.99);
-INSERT INTO PRODUCT (id, product_name, category, company_id, price) VALUES (4,'Silver Cutlery', 3, 4, 250.0);
+INSERT INTO PRODUCT (product_name, category, company_id, price) VALUES ('Awesome Phone',1,1,754.75);
+INSERT INTO PRODUCT (product_name, category, company_id, price) VALUES ('Knock Off Phone',1,2,354.23);
+INSERT INTO PRODUCT (product_name, category, company_id, price) VALUES ('Jeans',2,3,24.99);
+INSERT INTO PRODUCT (product_name, category, company_id, price) VALUES ('Silver Cutlery', 3, 4, 250.0);
+INSERT INTO PRODUCT (product_name, company_id, price) VALUES ('Juggling Clubs', 4, 12.50);
 
 CREATE TABLE PRODUCT_TYPES (
     category int NOT NULL,
@@ -55,6 +56,7 @@ CREATE TABLE PRODUCT_TYPES (
 INSERT INTO PRODUCT_TYPES (category, category_name) VALUES (1, 'Phone');
 INSERT INTO PRODUCT_TYPES (category, category_name) VALUES (2, 'Clothing');
 INSERT INTO PRODUCT_TYPES (category, category_name) VALUES (3, 'Home');
+INSERT INTO PRODUCT_TYPES (category, category_name) VALUES (4, 'Miscellaneous');
 
 CREATE TABLE SUPPORT (
     company_id int  NOT NULL,
@@ -82,7 +84,7 @@ CREATE TABLE TRANSACTIONS (
     CONSTRAINT transaction_pk PRIMARY KEY  (id)
 );
 
-INSERT INTO TRANSACTIONS (id, user_id, product_id, quantity, transact_date) VALUES (1,1,1,1, '2021-02-15');
-INSERT INTO TRANSACTIONS (id,  user_id, product_id, quantity, transact_date) VALUES (2,2,1,2,'2021-02-13');
-INSERT INTO TRANSACTIONS (id, user_id, product_id, quantity, transact_date) VALUES (3,2,3,4,'2021-02-11');
-INSERT INTO TRANSACTIONS (id, user_id, product_id, quantity, transact_date) VALUES (4,4,4,1,'2021-02-09');
+INSERT INTO TRANSACTIONS (user_id, product_id, quantity, transact_date) VALUES (1,1,1, '2021-02-15');
+INSERT INTO TRANSACTIONS (user_id, product_id, quantity, transact_date) VALUES (2,1,2,'2021-02-13');
+INSERT INTO TRANSACTIONS (user_id, product_id, quantity, transact_date) VALUES (2,3,4,'2021-02-11');
+INSERT INTO TRANSACTIONS (user_id, product_id, quantity, transact_date) VALUES (4,4,1,'2021-02-09');

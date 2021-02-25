@@ -32,7 +32,7 @@
       <item>
        <widget class="QTabWidget" name="tabWidget">
         <property name="currentIndex">
-         <number>4</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tab_user_select">
          <attribute name="title">
@@ -590,7 +590,7 @@
                  </font>
                 </property>
                 <property name="text">
-                 <string>New Product</string>
+                 <string>Add Product</string>
                 </property>
                </widget>
               </item>
@@ -612,7 +612,7 @@
                  </font>
                 </property>
                 <property name="text">
-                 <string>Change Listing</string>
+                 <string>Add Listing</string>
                 </property>
                </widget>
               </item>
@@ -669,7 +669,7 @@
               <item row="8" column="0">
                <widget class="QPushButton" name="pb_change_listing">
                 <property name="text">
-                 <string>Add/Change Listing</string>
+                 <string>Add Listing</string>
                 </property>
                </widget>
               </item>

@@ -503,7 +503,7 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(4)
+        self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -541,14 +541,14 @@ class Ui_MainWindow(object):
         self.label_10.setText(_translate("MainWindow", "Company Id"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_product), _translate("MainWindow", "Buy Product"))
         self.label_12.setText(_translate("MainWindow", "Price"))
-        self.label_search_options_2.setText(_translate("MainWindow", "New Product"))
+        self.label_search_options_2.setText(_translate("MainWindow", "Add Product"))
         self.label_11.setText(_translate("MainWindow", "Product Id"))
-        self.label_search_options.setText(_translate("MainWindow", "Change Listing"))
+        self.label_search_options.setText(_translate("MainWindow", "Add Listing"))
         self.label_6.setText(_translate("MainWindow", "Category"))
         self.label_7.setText(_translate("MainWindow", "Price"))
         self.label_5.setText(_translate("MainWindow", "Product Name"))
         self.pb_new_item.setText(_translate("MainWindow", "Add New Item"))
-        self.pb_change_listing.setText(_translate("MainWindow", "Add/Change Listing"))
+        self.pb_change_listing.setText(_translate("MainWindow", "Add Listing"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_companies), _translate("MainWindow", "Add Listing"))
         self.label_products_search_options.setText(_translate("MainWindow", "Search Options"))
         self.label_product_name_2.setText(_translate("MainWindow", "Category"))

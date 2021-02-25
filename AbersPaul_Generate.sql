@@ -14,7 +14,7 @@ CREATE TABLE COMPANY (
 
 INSERT INTO COMPANY (cname, address, country_code) VALUES ('Electron','Sante Fe, NM','United States');
 INSERT INTO COMPANY (cname, address, country_code) VALUES ('Intensity','New York NY','United States');
-INSERT INTO COMPANY (cname, address, country_code) VALUES ('Danke','Munich','Germany');
+INSERT INTO COMPANY (cname, address, country_code) VALUES ('TK Maxx','Munich','Germany');
 INSERT INTO COMPANY (cname, address, country_code) VALUES ('Voules Vouz','Place de Italie, Paris','France');
 
 
@@ -35,17 +35,28 @@ CREATE TABLE PRODUCT (
     id int  NOT NULL AUTO_INCREMENT,
     product_name varchar(128) NOT NULL,
     category int NOT NULL DEFAULT 4,
-    company_id int NOT NULL,
-    price float NOT NULL,
-    FOREIGN KEY (company_id) REFERENCES COMPANY(id),
     CONSTRAINT product_pk PRIMARY KEY  (id)
 );
 
-INSERT INTO PRODUCT (product_name, category, company_id, price) VALUES ('Awesome Phone',1,1,754.75);
-INSERT INTO PRODUCT (product_name, category, company_id, price) VALUES ('Knock Off Phone',1,2,354.23);
-INSERT INTO PRODUCT (product_name, category, company_id, price) VALUES ('Jeans',2,3,24.99);
-INSERT INTO PRODUCT (product_name, category, company_id, price) VALUES ('Silver Cutlery', 3, 4, 250.0);
-INSERT INTO PRODUCT (product_name, company_id, price) VALUES ('Juggling Clubs', 4, 12.50);
+INSERT INTO PRODUCT (product_name, category) VALUES ('Awesome Phone',1);
+INSERT INTO PRODUCT (product_name, category) VALUES ('Knock Off Phone',1);
+INSERT INTO PRODUCT (product_name, category) VALUES ('Jeans',2);
+INSERT INTO PRODUCT (product_name, category) VALUES ('Silver Cutlery', 3);
+INSERT INTO PRODUCT (product_name, category) VALUES ('Juggling Clubs', 4);
+
+CREATE TABLE LISTING (
+    company_id int NOT NULL,
+    product_id int NOT NULL,
+    price float NOT NULL,
+    CONSTRAINT listing_pk PRIMARY KEY (company_id, product_id)
+);
+
+INSERT INTO LISTING (company_id, product_id, price) VALUES (1, 1, 749.95);
+INSERT INTO LISTING (company_id, product_id, price) VALUES (1, 2, 249.99);
+INSERT INTO LISTING (company_id, product_id, price) VALUES (2, 1, 650.49);
+INSERT INTO LISTING (company_id, product_id, price) VALUES (3, 3 , 29.99);
+INSERT INTO LISTING (company_id, product_id, price) VALUES (4, 4 , 129.99);
+INSERT INTO LISTING (company_id, product_id, price) VALUES (2, 5 , 9.99);
 
 CREATE TABLE PRODUCT_TYPES (
     category int NOT NULL,
@@ -77,14 +88,17 @@ CREATE TABLE TRANSACTIONS (
     id int  NOT NULL AUTO_INCREMENT,
     user_id int NOT NULL,
     product_id int NOT NULL,
+    company_id int NOT NULL,
     quantity int NOT NULL,
     transact_date date NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES USER(id),
-    FOREIGN KEY (product_id) REFERENCES PRODUCT(id),
+    CONSTRAINT transaction_user_fk FOREIGN KEY (user_id) REFERENCES USER(id),
+    CONSTRAINT transaction_product_fk FOREIGN KEY (product_id) REFERENCES PRODUCT(id),
+    CONSTRAINT transaction_company_fk FOREIGN KEY (company_id) REFERENCES COMPANY(id),
+    CONSTRAINT transaction_listing_fk FOREIGN KEY (company_id, product_id) REFERENCES LISTING(company_id, product_id),
     CONSTRAINT transaction_pk PRIMARY KEY  (id)
 );
 
-INSERT INTO TRANSACTIONS (user_id, product_id, quantity, transact_date) VALUES (1,1,1, '2021-02-15');
-INSERT INTO TRANSACTIONS (user_id, product_id, quantity, transact_date) VALUES (2,1,2,'2021-02-13');
-INSERT INTO TRANSACTIONS (user_id, product_id, quantity, transact_date) VALUES (2,3,4,'2021-02-11');
-INSERT INTO TRANSACTIONS (user_id, product_id, quantity, transact_date) VALUES (4,4,1,'2021-02-09');
+INSERT INTO TRANSACTIONS (user_id, product_id, company_id, quantity, transact_date) VALUES (1,1,1,1, '2021-02-15');
+INSERT INTO TRANSACTIONS (user_id, product_id, company_id, quantity, transact_date) VALUES (2,1,2,2,'2021-02-13');
+INSERT INTO TRANSACTIONS (user_id, product_id, company_id, quantity, transact_date) VALUES (2,3,3,4,'2021-02-11');
+INSERT INTO TRANSACTIONS (user_id, product_id, company_id, quantity, transact_date) VALUES (4,4,4,1,'2021-02-09');

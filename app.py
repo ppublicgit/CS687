@@ -32,8 +32,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.pb_new_item.clicked.connect(self.handle_new_item)
         self.pb_product_search.clicked.connect(self.handle_search_item)
         self.pb_product_search_reset.clicked.connect(self.handle_search_reset)
+        self.pb_change_listing.clicked.connect(self.handle_change_listing)
 
-        self.table_transactions.setColumnCount(8)
+        self.table_transactions.setColumnCount(9)
 
         self.display_all_items()
         self.display_all_companies()
@@ -53,7 +54,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
     def get_max_val(self):
-        self.eng.sql_command("SELECT price FROM PRODUCT ORDER BY price DESC")
+        self.eng.sql_command("SELECT price FROM LISTING ORDER BY price DESC")
         price = None
         for row in self.eng.cursor:
             if price is None:
@@ -72,8 +73,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
     def display_all_items(self):
-        self.table_items.setColumnCount(5)
-        self.eng.sql_command("SELECT p.id, p.product_name, pt.category_name, p.company_id, p.price FROM PRODUCT AS p JOIN PRODUCT_TYPES AS pt ON p.category = pt.category")
+        self.table_items.setColumnCount(6)
+        self.eng.sql_command("SELECT l.product_id, p.product_name, pt.category_name, l.company_id, c.cname, l.price FROM COMPANY AS c JOIN (LISTING AS l JOIN (PRODUCT AS p JOIN PRODUCT_TYPES AS pt ON p.category = pt.category) ON l.product_id = p.id) ON c.id = l.company_id")
         self.table_items.clear()
         for i, row in enumerate(self.eng.cursor):
             if self.table_items.rowCount() <= i:
@@ -84,7 +85,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self.table_items.setItem(i, j, newitem)
         self.table_items.resizeColumnsToContents()
         self.table_items.resizeRowsToContents()
-        self.table_items.setHorizontalHeaderLabels(["Product ID", "Product Name", "Category", "Company ID", "Price"])
+        self.table_items.setHorizontalHeaderLabels(["Product ID", "Product Name", "Category", "Company ID", "Company Name", "Price"])
         return
 
 
@@ -107,8 +108,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
     def display_all_support(self):
-        self.table_support.setColumnCount(4)
-        self.eng.sql_command("SELECT s.company_id, s.contact_name, s.contact_email, s.contact_phone FROM SUPPORT as s")
+        self.table_support.setColumnCount(5)
+        self.eng.sql_command("SELECT c.cname, s.contact_name, s.contact_email, s.contact_phone FROM SUPPORT as s JOIN COMPANY as c ON c.id = s.company_id")
         self.table_support.clear()
         for i, row in enumerate(self.eng.cursor):
             if self.table_support.rowCount() <= i:
@@ -120,7 +121,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.table_support.resizeColumnsToContents()
         self.table_support.resizeRowsToContents()
 
-        self.table_support.setHorizontalHeaderLabels(["Company ID", "Contact Name", "Contact Email", "Contact Phone"])
+        self.table_support.setHorizontalHeaderLabels(["Company Name", "Contact Name", "Contact Email", "Contact Phone"])
         return
 
 
@@ -136,9 +137,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         highprice = self.sb_max_price.value()
         category = self.cb_search_category.currentIndex()
         if category == 0:
-            command = f"SELECT p.id, p.product_name, pt.category_name, p.company_id, p.price FROM PRODUCT AS p JOIN PRODUCT_TYPES AS pt ON p.category = pt.category WHERE p.price <= {highprice} AND p.price >= {lowprice}"
+            command = f"SELECT p.id, p.product_name, pt.category_name, l.company_id, c.cname, l.price FROM COMPANY AS c JOIN (LISTING AS l JOIN (PRODUCT AS p JOIN PRODUCT_TYPES AS pt ON p.category = pt.category) ON l.product_id=p.id) ON l.company_id=c.id WHERE l.price <= {highprice} AND l.price >= {lowprice}"
         else:
-            command = f"SELECT p.id, p.product_name, pt.category_name, p.company_id, p.price FROM PRODUCT AS p JOIN PRODUCT_TYPES AS pt ON p.category = pt.category WHERE p.price <= {highprice} AND p.price >= {lowprice} AND p.category = {category}"
+            command = f"SELECT p.id, p.product_name, pt.category_name, l.company_id, c.cname, l.price FROM COMPANY AS c JOIN (LISTING AS l JOIN (PRODUCT AS p JOIN PRODUCT_TYPES AS pt ON p.category = pt.category) ON l.product_id=p.id) ON l.company_id=c.id WHERE l.price <= {highprice} AND l.price >= {lowprice} AND p.category = {category}"
+
         self.eng.sql_command(command)
         self.table_items.clear()
         for i, row in enumerate(self.eng.cursor):
@@ -192,10 +194,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if self.current_user[0] != "User":
             return
         pid = self.le_buy_id.text()
+        cid = self.le_buy_company_id.text()
         quantity = self.le_buy_quantity.text()
         uid = self.current_user[1]
         transact_date = datetime.datetime.now().strftime("%Y-%m-%d")
-        self.eng.sql_command(f"INSERT INTO TRANSACTIONS (user_id, product_id, quantity, transact_date) VALUES ({uid}, {pid}, {quantity}, '{transact_date}')")
+        self.eng.sql_command(f"INSERT INTO TRANSACTIONS (user_id, product_id, company_id, quantity, transact_date) VALUES ({uid}, {pid}, {cid}, {quantity}, '{transact_date}')")
         self.user_transaction_options()
         return
 
@@ -207,7 +210,32 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         cat = self.cb_new_item_category.currentIndex()
         cid = self.current_user[1]
         price = self.le_new_item_price.text()
-        self.eng.sql_command(f"INSERT INTO PRODUCT (product_name, category, company_id, price) VALUES ('{pn}', {cat}, {cid}, {price})")
+        self.eng.sql_command(f"INSERT INTO PRODUCT (product_name, category) VALUES ('{pn}', {cat})")
+        self.eng.sql_commnad(f"SELECT id FROM PRODUCT WHERE name='{pn}'")
+        for row in self.eng.cursor:
+            pid = row[0]
+        self.eng.sql_command(f"INSERT INTO LISTING (company_id, product_id, price) VALUES ({cid}, {pid}, {price})")
+        self.display_all_items()
+        if float(price) > self.maxval:
+            self.maxval = float(price)
+            self.sb_min_price.setMaximum(self.maxval)
+            self.sb_max_price.setMaximum(self.maxval)
+            self.sb_min_price.setValue(0)
+            self.sb_max_price.setValue(self.maxval)
+        return
+
+
+    def handle_change_listing(self):
+        if self.current_user[0] != "Company":
+            return
+        cid = self.current_user[1]
+        pid = self.le_change_listing_pid.text()
+        price = self.le_change_listing_price.text()
+        try:
+            self.eng.sql_command(f"INSERT INTO LISTING (company_id, product_id, price) VALUES ({cid}, {pid}, {price})")
+        except e:
+            print(e)
+            return
         self.display_all_items()
         if float(price) > self.maxval:
             self.maxval = float(price)
@@ -339,7 +367,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def user_transaction_options(self):
         uid = self.le_user_id.text()
         ordering = self.get_ordering()
-        self.eng.sql_command(f"SELECT t.id, t.user_id, p.company_id, p.product_name, pt.category_name, t.quantity, p.price, t.transact_date FROM TRANSACTIONS AS t JOIN PRODUCT AS p ON p.id = t.product_id JOIN PRODUCT_TYPES AS pt ON p.category = pt.category  WHERE t.user_id = {uid} ORDER BY {ordering} DESC")
+        self.eng.sql_command(f"SELECT t.id, t.user_id, t.company_id, c.cname, p.product_name, pt.category_name, t.quantity, l.price, t.transact_date FROM TRANSACTIONS as t JOIN LISTING as l ON t.company_id=l.company_id AND t.product_id=l.product_id JOIN COMPANY AS C ON c.id=t.company_id JOIN PRODUCT AS p ON p.id=t.product_id JOIN PRODUCT_TYPES as pt ON pt.category=p.category WHERE t.user_id = {uid} ORDER BY {ordering} DESC")
         self.table_transactions.clear()
         for i, row in enumerate(self.eng.cursor):
             if self.table_transactions.rowCount() <= i:
@@ -354,14 +382,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.table_transactions.resizeColumnsToContents()
         self.table_transactions.resizeRowsToContents()
 
-        self.table_transactions.setHorizontalHeaderLabels(["Order #", "User ID", "Company ID", "Product", "Category", "Quantity", "Price", "Date"])
+        self.table_transactions.setHorizontalHeaderLabels(["Order #", "User ID", "Company ID", "Company Name",  "Product", "Category", "Quantity", "Price", "Date"])
         return
 
 
     def company_transaction_options(self):
         cid = self.le_company_id.text()
         ordering = self.get_ordering()
-        self.eng.sql_command(f"SELECT t.id, t.user_id, p.company_id, p.product_name, pt.category_name, t.quantity, p.price, t.transact_date FROM TRANSACTIONS AS t JOIN PRODUCT AS p ON p.id = t.product_id JOIN PRODUCT_TYPES AS pt ON p.category = pt.category  WHERE p.company_id = {cid} ORDER BY {ordering} DESC")
+        self.eng.sql_command(f"SELECT t.id, t.user_id, t.company_id, c.cname, p.product_name, pt.category_name, t.quantity, l.price, t.transact_date FROM TRANSACTIONS as t JOIN LISTING as l ON t.company_id=l.company_id AND t.product_id=l.product_id JOIN COMPANY AS C ON c.id=t.company_id JOIN PRODUCT AS p ON p.id=t.product_id JOIN PRODUCT_TYPES as pt ON pt.category=p.category WHERE t.company_id = {cid} ORDER BY {ordering} DESC")
         self.table_transactions.clear()
         for i, row in enumerate(self.eng.cursor):
             if self.table_transactions.rowCount() <= i:
@@ -376,7 +404,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.table_transactions.resizeColumnsToContents()
         self.table_transactions.resizeRowsToContents()
 
-        self.table_transactions.setHorizontalHeaderLabels(["Order #", "User ID", "Company ID", "Product", "Category", "Qunatity", "Price", "Date"])
+        self.table_transactions.setHorizontalHeaderLabels(["Order #", "User ID", "Company ID", "Company Name", "Product", "Category", "Qunatity", "Price", "Date"])
         return
 
 

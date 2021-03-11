@@ -14,7 +14,7 @@ CREATE TABLE COMPANY (
 
 INSERT INTO COMPANY (cname, address, country_code) VALUES ('Electron','Sante Fe, NM','United States');
 INSERT INTO COMPANY (cname, address, country_code) VALUES ('Intensity','New York NY','United States');
-INSERT INTO COMPANY (cname, address, country_code) VALUES ('TK Maxx','Munich','Germany');
+INSERT INTO COMPANY (cname, address, country_code) VALUES ('Danke','Munich','Germany');
 INSERT INTO COMPANY (cname, address, country_code) VALUES ('Voules Vouz','Place de Italie, Paris','France');
 
 
@@ -44,20 +44,6 @@ INSERT INTO PRODUCT (product_name, category) VALUES ('Jeans',2);
 INSERT INTO PRODUCT (product_name, category) VALUES ('Silver Cutlery', 3);
 INSERT INTO PRODUCT (product_name, category) VALUES ('Juggling Clubs', 4);
 
-CREATE TABLE LISTING (
-    company_id int NOT NULL,
-    product_id int NOT NULL,
-    price float NOT NULL,
-    CONSTRAINT listing_pk PRIMARY KEY (company_id, product_id)
-);
-
-INSERT INTO LISTING (company_id, product_id, price) VALUES (1, 1, 749.95);
-INSERT INTO LISTING (company_id, product_id, price) VALUES (1, 2, 249.99);
-INSERT INTO LISTING (company_id, product_id, price) VALUES (2, 1, 650.49);
-INSERT INTO LISTING (company_id, product_id, price) VALUES (3, 3 , 29.99);
-INSERT INTO LISTING (company_id, product_id, price) VALUES (4, 4 , 129.99);
-INSERT INTO LISTING (company_id, product_id, price) VALUES (2, 5 , 9.99);
-
 CREATE TABLE PRODUCT_TYPES (
     category int NOT NULL,
     category_name varchar(32) NOT NULL,
@@ -68,6 +54,22 @@ INSERT INTO PRODUCT_TYPES (category, category_name) VALUES (1, 'Phone');
 INSERT INTO PRODUCT_TYPES (category, category_name) VALUES (2, 'Clothing');
 INSERT INTO PRODUCT_TYPES (category, category_name) VALUES (3, 'Home');
 INSERT INTO PRODUCT_TYPES (category, category_name) VALUES (4, 'Miscellaneous');
+
+CREATE TABLE LISTING (
+    company_id int NOT NULL,
+    product_id int NOT NULL,
+    price float NOT NULL,
+    FOREIGN KEY listing_fk_company (company_id) REFERENCES COMPANY(id),
+    FOREIGN KEY listing_fk_product (product_id) REFERENCES PRODUCT(id),
+    CONSTRAINT listing_pk PRIMARY KEY  (company_id, product_id)
+);
+
+INSERT INTO LISTING (company_id, product_id, price) VALUES (1, 1, 754.95);
+INSERT INTO LISTING (company_id, product_id, price) VALUES (2, 1, 650);
+INSERT INTO LISTING (company_id, product_id, price) VALUES (2, 2, 249.99);
+INSERT INTO LISTING (company_id, product_id, price) VALUES (3, 3, 149.99);
+INSERT INTO LISTING (company_id, product_id, price) VALUES (4, 4, 119.95);
+INSERT INTO LISTING (company_id, product_id, price) VALUES (3, 5, 12.50);
 
 CREATE TABLE SUPPORT (
     company_id int  NOT NULL,
@@ -91,14 +93,18 @@ CREATE TABLE TRANSACTIONS (
     company_id int NOT NULL,
     quantity int NOT NULL,
     transact_date date NOT NULL,
-    CONSTRAINT transaction_user_fk FOREIGN KEY (user_id) REFERENCES USER(id),
-    CONSTRAINT transaction_product_fk FOREIGN KEY (product_id) REFERENCES PRODUCT(id),
-    CONSTRAINT transaction_company_fk FOREIGN KEY (company_id) REFERENCES COMPANY(id),
-    CONSTRAINT transaction_listing_fk FOREIGN KEY (company_id, product_id) REFERENCES LISTING(company_id, product_id),
+    FOREIGN KEY transact_fk_user (user_id) REFERENCES USER(id),
+    FOREIGN KEY transact_fk_product (product_id) REFERENCES PRODUCT(id),
+    FOREIGN KEY transact_fk_company (company_id) REFERENCES COMPANY(id),
+    FOREIGN KEY transact_fk_listing (company_id, product_id) REFERENCES LISTING(company_id, product_id),
     CONSTRAINT transaction_pk PRIMARY KEY  (id)
 );
 
-INSERT INTO TRANSACTIONS (user_id, product_id, company_id, quantity, transact_date) VALUES (1,1,1,1, '2021-02-15');
+INSERT INTO TRANSACTIONS (user_id, product_id, company_id, quantity, transact_date) VALUES (1,1,1,1,'2021-02-15');
 INSERT INTO TRANSACTIONS (user_id, product_id, company_id, quantity, transact_date) VALUES (2,1,2,2,'2021-02-13');
 INSERT INTO TRANSACTIONS (user_id, product_id, company_id, quantity, transact_date) VALUES (2,3,3,4,'2021-02-11');
 INSERT INTO TRANSACTIONS (user_id, product_id, company_id, quantity, transact_date) VALUES (4,4,4,1,'2021-02-09');
+INSERT INTO TRANSACTIONS (user_id, product_id, company_id, quantity, transact_date) VALUES (1,1,1,5,'2021-03-15');
+INSERT INTO TRANSACTIONS (user_id, product_id, company_id, quantity, transact_date) VALUES (3,5,3,2,'2021-03-13');
+INSERT INTO TRANSACTIONS (user_id, product_id, company_id, quantity, transact_date) VALUES (1,3,3,100,'2021-03-11');
+INSERT INTO TRANSACTIONS (user_id, product_id, company_id, quantity, transact_date) VALUES (4,2,2,10,'2021-03-09');

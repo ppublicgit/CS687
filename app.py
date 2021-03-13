@@ -13,7 +13,11 @@ import datetime
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
+    """Class for creating and handling GUI
+    """
     def __init__(self, parent=None):
+        """Initialization of GUI
+        """
         super().__init__(parent)
         self.setupUi(self)
 
@@ -25,6 +29,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
     def setup_gui(self):
+        """Setup GUI buttons and boxes
+
+        Connect actions of buttons and spin boxes and more to
+        function handlers
+        """
+        # setup push buttons
         self.pb_user_select.clicked.connect(self.handle_user_select)
         self.pb_edit_details.clicked.connect(self.handle_edit_details)
         self.pb_sort.clicked.connect(self.handle_sort_transactions)
@@ -33,26 +43,34 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.pb_product_search.clicked.connect(self.handle_search_item)
         self.pb_product_search_reset.clicked.connect(self.handle_search_reset)
 
+        # initialize table for transactions
         self.table_transactions.setColumnCount(8)
 
+        # display all the companies, items and support in their respective tables
         self.display_all_items()
         self.display_all_companies()
         self.display_all_support()
 
+        # intialize the user
         self.le_company_id.setEnabled(False)
         self.le_user_id.setEnabled(False)
 
+        # get the categories found in the database
         self.setup_categories()
 
+        # get the maximum value for the prices in listing table
         self.maxval = self.get_max_val()
 
-        self.set_sb_vals(self.sb_min_price, minval=0, maxval=self.maxval, val=0)
+        # setup the spin boxes
+        self.set_sb_vals(self.sb_min_price, minval=0, maxval=1000000, val=0)
         self.set_sb_vals(self.sb_max_price, minval=0, maxval=1000000, val=self.maxval)
         self.sb_min_price.valueChanged.connect(self.sb_min_price_update)
         self.sb_max_price.valueChanged.connect(self.sb_max_price_update)
 
 
     def get_max_val(self):
+        """Get the maximum listing price
+        """
         self.eng.sql_command("SELECT price FROM LISTING ORDER BY price DESC")
         price = None
         for row in self.eng.cursor:
@@ -62,6 +80,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
     def setup_categories(self):
+        """Get all the categories in the product_types table
+        """
         self.eng.sql_command("SELECT category, category_name FROM PRODUCT_TYPES")
         self.cb_search_category.insertItem(0, "All")
         for (cat, cat_name) in self.eng.cursor:
@@ -71,6 +91,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
     def display_all_items(self):
+        """Display all items in the item table of the gui
+
+        Call a SQL Query to get all the items in the product and the
+        associated listings and display in table_items in gui
+        """
         self.table_items.setColumnCount(5)
         self.eng.sql_command((f"SELECT p.id, p.product_name, "
                               f"pt.category_name, c.cname, l.price "
@@ -98,6 +123,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
     def display_all_companies(self):
+        """Display all companies in company table to GUI's table company
+        """
         self.table_companies.setColumnCount(4)
         self.eng.sql_command(("SELECT c.id, c.cname, c.address, c.country_code "
                              "FROM COMPANY AS c"))
@@ -120,6 +147,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
     def display_all_support(self):
+        """Display all support personnel in support table to GUI's table support
+        """
         self.table_support.setColumnCount(4)
         self.eng.sql_command(("SELECT c.cname, s.contact_name, "
                               "s.contact_email, s.contact_phone FROM SUPPORT as s "
@@ -143,6 +172,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
     def handle_search_reset(self):
+        """Handle search reset button press
+
+        Reset the search settings for the item table to show all the
+        available items again
+        """
         self.sb_min_price.setValue(0)
         self.sb_max_price.setValue(self.maxval)
         self.display_all_items()
@@ -150,9 +184,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
     def handle_search_item(self):
+        """Handle searching the item table
+
+        Use the paramaters set in the options on the item tab of the gui
+        to query the database
+        """
         lowprice = self.sb_min_price.value()
         highprice = self.sb_max_price.value()
         category = self.cb_search_category.currentIndex()
+        # if check to query on category
         if not category:
             command = (f"SELECT p.id, p.product_name, pt.category_name, "
                        f"c.cname, l.price FROM PRODUCT AS p JOIN "
@@ -188,6 +228,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
     def handle_edit_details(self):
+        """Handle the edit details button pressed
+
+        Update the user or company information for the given user or company
+        that is currently logged in
+        """
+        # check if a user, company or nobody is logged in
         if self.current_user[0] is None:
             pass
         elif self.current_user[0] == "Company":
@@ -218,6 +264,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
     def handle_sort_transactions(self):
+        """Handle sort transactions button pressed
+
+        Requery the transaction table (joined with others)
+        to get the transaction information for a user or company
+        and sort the output based on the sort option chosen
+        """
         if self.current_user[0] == "Company":
             self.company_transaction_options()
         elif self.current_user[0] == "User":
@@ -226,6 +278,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
     def handle_buy(self):
+        """Handle the buy button pressed
+
+        Only available if a user is logged in. User can buy product from
+        specified company. Updates the transaction table of the database
+        as well and is included in the users transaction table
+        """
         if self.current_user[0] != "User":
             return
         pid = self.le_buy_id.text()
@@ -241,6 +299,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
     def handle_new_item(self):
+        """Handle the new item button being pressed
+
+        Only available if a company is logged in. Company is able to add an item to
+        be listed. If the item already exists, only a listing pertaining to the company
+        is added. IF the item does not exist, it is first added to the product table
+        and then added to the listing table.
+        """
         if self.current_user[0] != "Company":
             return
         pn = self.le_new_item_name.text()
@@ -248,28 +313,37 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         cid = self.current_user[1]
         price = self.le_new_item_price.text()
         pid = None
+        # check to see if product already exists
         self.eng.sql_command(f"SELECT id FROM PRODUCT WHERE product_name = '{pn}'")
         for row in self.eng.cursor:
             pid = row[0]
+        # no product id found add to product table first
         if pid is None:
             self.eng.sql_command((f"INSERT INTO PRODUCT (product_name, category) "
                                   f"VALUES ('{pn}', {cat})"))
             self.eng.sql_command(f"SELECT id FROM PRODUCT WHERE product_name = '{pn}'")
             for row in self.eng.cursor:
                 pid = row[0]
+        # add to listing table
         self.eng.sql_command((f"INSERT INTO LISTING (company_id, product_id, price) "
                               f"VALUES ({cid}, {pid}, {price})"))
         self.display_all_items()
+        # check if new listing is the new maximum listing price
         if float(price) > self.maxval:
             self.maxval = float(price)
             self.sb_min_price.setMaximum(self.maxval)
-            self.sb_max_price.setMaximum(self.maxval)
             self.sb_min_price.setValue(0)
             self.sb_max_price.setValue(self.maxval)
         return
 
 
     def set_user_info(self, id_, fn, ln, add, disable=False):
+        """Set user info
+
+        Set the text boxes of the gui to the args passed in information and
+        set the gui into either company or user mode depending on
+        value of disable
+        """
         self.le_user_id.setText(str(id_))
         self.le_first_name.setText(fn)
         self.le_last_name.setText(ln)
@@ -280,6 +354,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
     def set_user_enabled(self, disable):
+        """Set the user mode paramaters based on disable
+        to either enable or disable various buttons
+        """
         self.le_first_name.setEnabled(not disable)
         self.le_last_name.setEnabled(not disable)
         self.le_address_user.setEnabled(not disable)
@@ -290,6 +367,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
     def set_company_enabled(self, disable):
+        """Set the user mode paramaters based on disable
+        to either enable or disable various buttons
+        """
         self.le_address_company.setEnabled(not disable)
         self.le_country_of_origin.setEnabled(not disable)
         self.le_act_company.setEnabled(not disable)
@@ -301,6 +381,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
     def set_comp_info(self, id_, cn, add, cou, disable=False):
+        """Set company info
+
+        Set the text boxes of the gui to the args passed in information and
+        set the gui into either company or user mode depending on
+        value of disable
+        """
         self.le_company_id.setText(str(id_))
         self.le_address_company.setText(add)
         self.le_country_of_origin.setText(cou)
@@ -311,8 +397,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
     def handle_user_select(self):
+        """Handle a select user button pressed
+
+        Determines if nobody, a user or company has been selected
+        and calls the appropriate functions to set up the gui for the
+        user/company logging in
+        """
         comp = self.rb_user_company.isChecked()
         user = self.rb_user_user.isChecked()
+        # no user or company selected
         if not comp and not user:
             self.set_user_info("", "", "", "")
             self.set_comp_info("", "", "", "")
@@ -323,11 +416,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         else:
             self.set_user_mode()
             self.le_user_company.setText("")
-        #self.setup_transaction_tab()
         return
 
 
     def set_company_mode(self):
+        """Setup company
+
+        Query the database for company id chosen and if found
+        set the company info and log in with company mode
+        """
         self.set_user_info("", "", "", "", True)
         cid = self.le_user_company.text()
         if cid == "":
@@ -348,6 +445,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
     def set_user_mode(self):
+        """Setup user
+
+        Query the database for user id chosen and if found
+        set the user info and log in with user mode
+        """
         self.set_comp_info("", "", "", "", True)
         userid = self.le_user_user.text()
         if userid == "":
@@ -368,12 +470,20 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
     def set_sb_vals(self, slider, minval, maxval, val):
+        """Set the spinbox values specified
+        """
         slider.setMinimum(minval)
         slider.setMaximum(maxval)
         slider.setValue(val)
 
 
     def sb_min_price_update(self):
+        """Update the spinbox min price for item search
+
+        Checks to see if the min price is greater than the current max
+        price set and if it is, updates the max to equal the min to
+        make sure that max price >= min price always
+        """
         curval = self.sb_min_price.value()
         if self.sb_max_price.value() < curval:
             self.sb_max_price.setValue(curval)
@@ -381,6 +491,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
     def sb_max_price_update(self):
+        """Update the spinbox max price for item search
+
+        Checks to see if the max price is less than the current min
+        price set and if it is, updates the min to equal the max to
+        make sure that max price >= min price always
+        """
         curval = self.sb_max_price.value()
         if self.sb_min_price.value() > curval:
             self.sb_min_price.setValue(curval)
@@ -388,6 +504,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
     def user_transaction_options(self):
+        """Get users transactions
+
+        User is logged on , get all the transactions of said user and display to
+        the transaction table of the gui
+        """
         uid = self.le_user_id.text()
         ordering = self.get_ordering()
         self.eng.sql_command((f"SELECT t.id, t.user_id, c.cname, "
@@ -418,6 +539,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
     def company_transaction_options(self):
+        """Get company transactions
+
+        Company is logged on , get all the transactions of said company and display to
+        the transaction table of the gui
+        """
         cid = self.le_company_id.text()
         ordering = self.get_ordering()
         self.eng.sql_command((f"SELECT t.id, t.user_id, c.cname, "
@@ -456,6 +582,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
     def get_ordering(self):
+        """Get the ordering sort for the transaction table of the gui
+        """
         if self.rb_sort_date.isChecked():
             return "t.transact_date"
         elif self.rb_sort_price.isChecked():

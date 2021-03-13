@@ -1,15 +1,10 @@
 import sys
-import pandas as pd
-
-import mysql.connector
-from mysql.connector import Error
+import datetime
 
 from PyQt5.QtWidgets import QMainWindow, QApplication, QFileDialog, QTableWidgetItem
 from app_ui import Ui_MainWindow
 
 from sql_py_helper import SqlConnection
-
-import datetime
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):

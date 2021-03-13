@@ -1,0 +1,287 @@
+<?xml version="1.0"?>
+<mysqldump xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<database name="FAKE_AMAZON">
+	<table_structure name="COMPANY">
+		<field Field="id" Type="int" Null="NO" Key="PRI" Extra="auto_increment" Comment="" />
+		<field Field="cname" Type="varchar(255)" Null="NO" Key="UNI" Extra="" Comment="" />
+		<field Field="address" Type="varchar(255)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="country_code" Type="varchar(64)" Null="NO" Key="" Extra="" Comment="" />
+		<key Table="COMPANY" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="4" Null="" Index_type="BTREE" Comment="" Index_comment="" Visible="YES" />
+		<key Table="COMPANY" Non_unique="0" Key_name="cname" Seq_in_index="1" Column_name="cname" Collation="A" Cardinality="4" Null="" Index_type="BTREE" Comment="" Index_comment="" Visible="YES" />
+		<options Name="COMPANY" Engine="InnoDB" Version="10" Row_format="Dynamic" Rows="4" Avg_row_length="4096" Data_length="16384" Max_data_length="0" Index_length="16384" Data_free="0" Auto_increment="5" Create_time="2021-03-11 03:15:56" Update_time="2021-03-11 03:15:56" Collation="utf8mb4_0900_ai_ci" Create_options="" Comment="" />
+	</table_structure>
+	<table_data name="COMPANY">
+	<row>
+		<field name="id">1</field>
+		<field name="cname">Electron</field>
+		<field name="address">Sante Fe, NM</field>
+		<field name="country_code">United States</field>
+	</row>
+	<row>
+		<field name="id">2</field>
+		<field name="cname">Intensity</field>
+		<field name="address">New York NY</field>
+		<field name="country_code">United States</field>
+	</row>
+	<row>
+		<field name="id">3</field>
+		<field name="cname">Danke</field>
+		<field name="address">Munich</field>
+		<field name="country_code">Germany</field>
+	</row>
+	<row>
+		<field name="id">4</field>
+		<field name="cname">Voules Vouz</field>
+		<field name="address">Place de Italie, Paris</field>
+		<field name="country_code">France</field>
+	</row>
+	</table_data>
+	<table_structure name="LISTING">
+		<field Field="company_id" Type="int" Null="NO" Key="PRI" Extra="" Comment="" />
+		<field Field="product_id" Type="int" Null="NO" Key="PRI" Extra="" Comment="" />
+		<field Field="price" Type="float" Null="NO" Key="" Extra="" Comment="" />
+		<key Table="LISTING" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="company_id" Collation="A" Cardinality="4" Null="" Index_type="BTREE" Comment="" Index_comment="" Visible="YES" />
+		<key Table="LISTING" Non_unique="0" Key_name="PRIMARY" Seq_in_index="2" Column_name="product_id" Collation="A" Cardinality="7" Null="" Index_type="BTREE" Comment="" Index_comment="" Visible="YES" />
+		<key Table="LISTING" Non_unique="1" Key_name="listing_fk_product" Seq_in_index="1" Column_name="product_id" Collation="A" Cardinality="6" Null="" Index_type="BTREE" Comment="" Index_comment="" Visible="YES" />
+		<options Name="LISTING" Engine="InnoDB" Version="10" Row_format="Dynamic" Rows="8" Avg_row_length="2048" Data_length="16384" Max_data_length="0" Index_length="16384" Data_free="0" Create_time="2021-03-11 03:15:56" Update_time="2021-03-11 03:15:56" Collation="utf8mb4_0900_ai_ci" Create_options="" Comment="" />
+	</table_structure>
+	<table_data name="LISTING">
+	<row>
+		<field name="company_id">1</field>
+		<field name="product_id">1</field>
+		<field name="price">754.95</field>
+	</row>
+	<row>
+		<field name="company_id">2</field>
+		<field name="product_id">1</field>
+		<field name="price">650</field>
+	</row>
+	<row>
+		<field name="company_id">2</field>
+		<field name="product_id">2</field>
+		<field name="price">249.99</field>
+	</row>
+	<row>
+		<field name="company_id">3</field>
+		<field name="product_id">3</field>
+		<field name="price">149.99</field>
+	</row>
+	<row>
+		<field name="company_id">3</field>
+		<field name="product_id">5</field>
+		<field name="price">12.5</field>
+	</row>
+	<row>
+		<field name="company_id">4</field>
+		<field name="product_id">4</field>
+		<field name="price">119.95</field>
+	</row>
+	</table_data>
+	<table_structure name="PRODUCT">
+		<field Field="id" Type="int" Null="NO" Key="PRI" Extra="auto_increment" Comment="" />
+		<field Field="product_name" Type="varchar(128)" Null="NO" Key="" Extra="" Comment="" />
+		<field Field="category" Type="int" Null="NO" Key="" Default="4" Extra="" Comment="" />
+		<key Table="PRODUCT" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="7" Null="" Index_type="BTREE" Comment="" Index_comment="" Visible="YES" />
+		<options Name="PRODUCT" Engine="InnoDB" Version="10" Row_format="Dynamic" Rows="8" Avg_row_length="2048" Data_length="16384" Max_data_length="0" Index_length="0" Data_free="0" Auto_increment="11" Create_time="2021-03-11 03:15:56" Update_time="2021-03-11 03:15:56" Collation="utf8mb4_0900_ai_ci" Create_options="" Comment="" />
+	</table_structure>
+	<table_data name="PRODUCT">
+	<row>
+		<field name="id">1</field>
+		<field name="product_name">Awesome Phone</field>
+		<field name="category">1</field>
+	</row>
+	<row>
+		<field name="id">2</field>
+		<field name="product_name">Knock Off Phone</field>
+		<field name="category">1</field>
+	</row>
+	<row>
+		<field name="id">3</field>
+		<field name="product_name">Jeans</field>
+		<field name="category">2</field>
+	</row>
+	<row>
+		<field name="id">4</field>
+		<field name="product_name">Silver Cutlery</field>
+		<field name="category">3</field>
+	</row>
+	<row>
+		<field name="id">5</field>
+		<field name="product_name">Juggling Clubs</field>
+		<field name="category">4</field>
+	</row>
+	</table_data>
+	<table_structure name="PRODUCT_TYPES">
+		<field Field="category" Type="int" Null="NO" Key="PRI" Extra="" Comment="" />
+		<field Field="category_name" Type="varchar(32)" Null="NO" Key="" Extra="" Comment="" />
+		<key Table="PRODUCT_TYPES" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="category" Collation="A" Cardinality="4" Null="" Index_type="BTREE" Comment="" Index_comment="" Visible="YES" />
+		<options Name="PRODUCT_TYPES" Engine="InnoDB" Version="10" Row_format="Dynamic" Rows="4" Avg_row_length="4096" Data_length="16384" Max_data_length="0" Index_length="0" Data_free="0" Create_time="2021-03-11 03:15:56" Update_time="2021-03-11 03:15:56" Collation="utf8mb4_0900_ai_ci" Create_options="" Comment="" />
+	</table_structure>
+	<table_data name="PRODUCT_TYPES">
+	<row>
+		<field name="category">1</field>
+		<field name="category_name">Phone</field>
+	</row>
+	<row>
+		<field name="category">2</field>
+		<field name="category_name">Clothing</field>
+	</row>
+	<row>
+		<field name="category">3</field>
+		<field name="category_name">Home</field>
+	</row>
+	<row>
+		<field name="category">4</field>
+		<field name="category_name">Miscellaneous</field>
+	</row>
+	</table_data>
+	<table_structure name="SUPPORT">
+		<field Field="company_id" Type="int" Null="NO" Key="PRI" Extra="" Comment="" />
+		<field Field="contact_name" Type="varchar(128)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="contact_email" Type="varchar(128)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="contact_phone" Type="bigint" Null="YES" Key="" Extra="" Comment="" />
+		<key Table="SUPPORT" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="company_id" Collation="A" Cardinality="4" Null="" Index_type="BTREE" Comment="" Index_comment="" Visible="YES" />
+		<options Name="SUPPORT" Engine="InnoDB" Version="10" Row_format="Dynamic" Rows="4" Avg_row_length="4096" Data_length="16384" Max_data_length="0" Index_length="0" Data_free="0" Create_time="2021-03-11 03:15:56" Update_time="2021-03-11 03:15:56" Collation="utf8mb4_0900_ai_ci" Create_options="" Comment="" />
+	</table_structure>
+	<table_data name="SUPPORT">
+	<row>
+		<field name="company_id">1</field>
+		<field name="contact_name">Support Team</field>
+		<field name="contact_email">support@electron.com</field>
+		<field name="contact_phone" xsi:nil="true" />
+	</row>
+	<row>
+		<field name="company_id">2</field>
+		<field name="contact_name">Anderson Silva</field>
+		<field name="contact_email">anderson.silva@intensity.com</field>
+		<field name="contact_phone">9213242949</field>
+	</row>
+	<row>
+		<field name="company_id">3</field>
+		<field name="contact_name">Craig Doyle</field>
+		<field name="contact_email" xsi:nil="true" />
+		<field name="contact_phone">2943842929</field>
+	</row>
+	<row>
+		<field name="company_id">4</field>
+		<field name="contact_name">Susan Dowling</field>
+		<field name="contact_email">susan@gmail.com</field>
+		<field name="contact_phone" xsi:nil="true" />
+	</row>
+	</table_data>
+	<table_structure name="TRANSACTIONS">
+		<field Field="id" Type="int" Null="NO" Key="PRI" Extra="auto_increment" Comment="" />
+		<field Field="user_id" Type="int" Null="NO" Key="MUL" Extra="" Comment="" />
+		<field Field="product_id" Type="int" Null="NO" Key="MUL" Extra="" Comment="" />
+		<field Field="company_id" Type="int" Null="NO" Key="MUL" Extra="" Comment="" />
+		<field Field="quantity" Type="int" Null="NO" Key="" Extra="" Comment="" />
+		<field Field="transact_date" Type="date" Null="NO" Key="" Extra="" Comment="" />
+		<key Table="TRANSACTIONS" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="8" Null="" Index_type="BTREE" Comment="" Index_comment="" Visible="YES" />
+		<key Table="TRANSACTIONS" Non_unique="1" Key_name="transact_fk_user" Seq_in_index="1" Column_name="user_id" Collation="A" Cardinality="4" Null="" Index_type="BTREE" Comment="" Index_comment="" Visible="YES" />
+		<key Table="TRANSACTIONS" Non_unique="1" Key_name="transact_fk_product" Seq_in_index="1" Column_name="product_id" Collation="A" Cardinality="5" Null="" Index_type="BTREE" Comment="" Index_comment="" Visible="YES" />
+		<key Table="TRANSACTIONS" Non_unique="1" Key_name="transact_fk_listing" Seq_in_index="1" Column_name="company_id" Collation="A" Cardinality="4" Null="" Index_type="BTREE" Comment="" Index_comment="" Visible="YES" />
+		<key Table="TRANSACTIONS" Non_unique="1" Key_name="transact_fk_listing" Seq_in_index="2" Column_name="product_id" Collation="A" Cardinality="6" Null="" Index_type="BTREE" Comment="" Index_comment="" Visible="YES" />
+		<options Name="TRANSACTIONS" Engine="InnoDB" Version="10" Row_format="Dynamic" Rows="9" Avg_row_length="1820" Data_length="16384" Max_data_length="0" Index_length="49152" Data_free="0" Auto_increment="10" Create_time="2021-03-11 03:15:56" Update_time="2021-03-11 03:15:56" Collation="utf8mb4_0900_ai_ci" Create_options="" Comment="" />
+	</table_structure>
+	<table_data name="TRANSACTIONS">
+	<row>
+		<field name="id">1</field>
+		<field name="user_id">1</field>
+		<field name="product_id">1</field>
+		<field name="company_id">1</field>
+		<field name="quantity">1</field>
+		<field name="transact_date">2021-02-15</field>
+	</row>
+	<row>
+		<field name="id">2</field>
+		<field name="user_id">2</field>
+		<field name="product_id">1</field>
+		<field name="company_id">2</field>
+		<field name="quantity">2</field>
+		<field name="transact_date">2021-02-13</field>
+	</row>
+	<row>
+		<field name="id">3</field>
+		<field name="user_id">2</field>
+		<field name="product_id">3</field>
+		<field name="company_id">3</field>
+		<field name="quantity">4</field>
+		<field name="transact_date">2021-02-11</field>
+	</row>
+	<row>
+		<field name="id">4</field>
+		<field name="user_id">4</field>
+		<field name="product_id">4</field>
+		<field name="company_id">4</field>
+		<field name="quantity">1</field>
+		<field name="transact_date">2021-02-09</field>
+	</row>
+	<row>
+		<field name="id">5</field>
+		<field name="user_id">1</field>
+		<field name="product_id">1</field>
+		<field name="company_id">1</field>
+		<field name="quantity">5</field>
+		<field name="transact_date">2021-03-15</field>
+	</row>
+	<row>
+		<field name="id">6</field>
+		<field name="user_id">3</field>
+		<field name="product_id">5</field>
+		<field name="company_id">3</field>
+		<field name="quantity">2</field>
+		<field name="transact_date">2021-03-13</field>
+	</row>
+	<row>
+		<field name="id">7</field>
+		<field name="user_id">1</field>
+		<field name="product_id">3</field>
+		<field name="company_id">3</field>
+		<field name="quantity">100</field>
+		<field name="transact_date">2021-03-11</field>
+	</row>
+	<row>
+		<field name="id">8</field>
+		<field name="user_id">4</field>
+		<field name="product_id">2</field>
+		<field name="company_id">2</field>
+		<field name="quantity">10</field>
+		<field name="transact_date">2021-03-09</field>
+	</row>
+	</table_data>
+	<table_structure name="USER">
+		<field Field="id" Type="int" Null="NO" Key="PRI" Extra="auto_increment" Comment="" />
+		<field Field="firstname" Type="varchar(32)" Null="NO" Key="" Extra="" Comment="" />
+		<field Field="lastname" Type="varchar(32)" Null="NO" Key="" Extra="" Comment="" />
+		<field Field="address" Type="varchar(255)" Null="NO" Key="" Extra="" Comment="" />
+		<key Table="USER" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="4" Null="" Index_type="BTREE" Comment="" Index_comment="" Visible="YES" />
+		<options Name="USER" Engine="InnoDB" Version="10" Row_format="Dynamic" Rows="4" Avg_row_length="4096" Data_length="16384" Max_data_length="0" Index_length="0" Data_free="0" Auto_increment="5" Create_time="2021-03-11 03:15:56" Update_time="2021-03-11 03:15:56" Collation="utf8mb4_0900_ai_ci" Create_options="" Comment="" />
+	</table_structure>
+	<table_data name="USER">
+	<row>
+		<field name="id">1</field>
+		<field name="firstname">Jennifer</field>
+		<field name="lastname">Smith</field>
+		<field name="address">Austin, TX</field>
+	</row>
+	<row>
+		<field name="id">2</field>
+		<field name="firstname">Adam</field>
+		<field name="lastname"> Smith</field>
+		<field name="address">Glasgow, Scotland</field>
+	</row>
+	<row>
+		<field name="id">3</field>
+		<field name="firstname">Pierangelo</field>
+		<field name="lastname">Pirlo</field>
+		<field name="address">Firenze, Italy</field>
+	</row>
+	<row>
+		<field name="id">4</field>
+		<field name="firstname">Tim</field>
+		<field name="lastname">Nguyen</field>
+		<field name="address">Hanoi, Vietnam</field>
+	</row>
+	</table_data>
+</database>
+</mysqldump>
